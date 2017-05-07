@@ -4,10 +4,9 @@
 // @license		MIT License
 // @author      ElvisKang<elviskang@foxmail.com>
 // @description 以最优惠的价格买到最心仪的书
-// @downloadURL https://greasyfork.org/scripts/3737-douban-book-bar/code/Douban%20Book%20Bar.user.js
-// @updateURL   https://greasyfork.org/scripts/3737-douban-book-bar/code/Douban%20Book%20Bar.meta.js
 // @include     *://www.amazon.cn/*
 // @include     *://item.jd.com/*
+// @include     *://*.tmall.com/*
 // @include     *://product.dangdang.com/*
 // @include     *://product.china-pub.com/*
 // @include     *://product.suning.com/*
@@ -129,7 +128,23 @@ if ( window.top === window.self ) {
             },
             insertPosition : "#summary-price"
         } );
+var Tmall = new SupportSite ( {
+            name : "tmall商城",
 
+            checker : /(https?:\/\/)?(www|detail)?\.tmall\.com\/.*/,
+
+            logo : "http://www.tmall.com/favicon.ico",
+
+            getISBN        : function () {
+                var bookinfo=document.getElementById('J_AttrUL').innerHTML;
+                var isbn=bookinfo.match(/9[0-9]{12}/);
+                if(isbn !== null) {
+                    return isbn;
+                }
+                return null;
+            },
+            insertPosition : "#J_StrPriceModBox"
+        } );
         var Dangdang = new SupportSite ( {
 
             name : "当当网",
@@ -488,7 +503,7 @@ if ( window.top === window.self ) {
         }
 
         function run () {
-            sitesContainer.addSites ( [Amazon, JD, Dangdang, Chinapub, Suning, SuningThird, DuoKan, WinXuan, ituring, epubit] );
+            sitesContainer.addSites ( [Amazon, JD, Dangdang, Chinapub, Suning, SuningThird, DuoKan, WinXuan, ituring, epubit, Tmall] );
             sitesContainer.curSite = location.href;
             if ( !sitesContainer.curSite ) {
                 log ( "-Error: 不支持当前的页面" );
