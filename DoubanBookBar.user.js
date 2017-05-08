@@ -8,6 +8,7 @@
 // @updateURL   https://greasyfork.org/scripts/3737-douban-book-bar/code/Douban%20Book%20Bar.meta.js
 // @include     *://www.amazon.cn/*
 // @include     *://item.jd.com/*
+// @include     *://e.jd.com/*
 // @include     *://product.dangdang.com/*
 // @include     *://product.china-pub.com/*
 // @include     *://product.suning.com/*
@@ -129,7 +130,22 @@ if ( window.top === window.self ) {
             },
             insertPosition : "#summary-price"
         } );
+ var JDe = new SupportSite ( {
+            name : "京东电子书",
 
+            checker : /(https?:\/\/)?(www|e)?\.jd\.com\/.*/,
+
+            logo : "http://www.jd.com/favicon.ico",
+
+            getISBN        : function () {
+                var liContent = document.querySelector ( ".dt:contains('I S B N')" ).next('div').text();
+                if(liContent.match(/^ISBN/) !== null) {
+                    return liContent.split ( "：" )[1];
+                }
+                return null;
+            },
+            insertPosition : "#summary-price"
+        } );
         var Dangdang = new SupportSite ( {
 
             name : "当当网",
@@ -488,7 +504,7 @@ if ( window.top === window.self ) {
         }
 
         function run () {
-            sitesContainer.addSites ( [Amazon, JD, Dangdang, Chinapub, Suning, SuningThird, DuoKan, WinXuan, ituring, epubit] );
+            sitesContainer.addSites ( [Amazon, JD, Dangdang, Chinapub, Suning, SuningThird, DuoKan, WinXuan, ituring, epubit, JDe] );
             sitesContainer.curSite = location.href;
             if ( !sitesContainer.curSite ) {
                 log ( "-Error: 不支持当前的页面" );
